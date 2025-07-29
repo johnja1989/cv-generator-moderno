@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder Pro - Plantillas Premium</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --background: #f8f9fa;
+            --white: #ffffff;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.03) 10px,
+                    rgba(255, 255, 255, 0.03) 20px);
+            animation: shine 20s linear infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr 400px;
+            min-height: 900px;
+        }
+
+        .form-section {
+            padding: 30px;
+            background: var(--background);
+            overflow-y: auto;
+            max-height: 85vh;
+            border-right: 1px solid #e1e8ed;
+        }
+
+        .templates-section {
+            padding: 30px;
+            background: white;
+            border-right: 1px solid #e1e8ed;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        .preview-section {
+            padding: 30px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        .section-title {
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent-color);
+        }
+
+        /* PLANTILLAS */
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .template-card {
+            position: relative;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            overflow: hidden;
+        }
+
+        .template-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .template-card.active {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .template-preview {
+            width: 100%;
+            height: 120px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-preview.classic {
+            background: linear-gradient(to bottom, #34495e 30%, #ecf0f1 30%);
+        }
+
+        .template-preview.modern {
+            background: linear-gradient(45deg, #3498db 50%, #ffffff 50%);
+        }
+
+        .template-preview.creative {
+            background: linear-gradient(135deg, #e74c3c, #f39c12, #27ae60, #3498db);
+        }
+
+        .template-preview.minimal {
+            background: linear-gradient(to right, #2c3e50 5%, #ffffff 5%);
+        }
+
+        .template-preview.executive {
+            background: linear-gradient(to bottom, #2c3e50 40%, #34495e 40%, #ffffff 60%);
+        }
+
+        .template-preview.artistic {
+            background: radial-gradient(circle, #9b59b6, #8e44ad, #2c3e50);
+        }
+
+        .template-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .template-type {
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .template-type.free {
+            background: #d5f4e6;
+            color: #16a085;
+        }
+
+        .template-type.premium {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 0 3px 10px rgba(240, 147, 251, 0.4);
+        }
+
+        /* PALETA DE COLORES */
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-option.active {
+            border-color: var(--text-dark);
+            transform: scale(1.15);
+        }
+
+        .color-option::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .color-option.active::after {
+            opacity: 1;
+        }
+
+        /* FORMULARIOS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .dynamic-section {
+            border: 2px dashed #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: white;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-premium:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+
+        /* VISTA PREVIA CV */
+        .cv-preview {
+            width: 100%;
+            max-width: 350px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .cv-header {
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .cv-content {
+            padding: 25px;
+        }
+
+        .cv-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .cv-contact {
+            margin-bottom: 4px;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .cv-section {
+            margin: 20px 0;
+        }
+
+        .cv-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .cv-item {
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+
+        .cv-item h4 {
+            font-weight: bold;
+            margin-bottom: 3px;
+            font-size: 1rem;
+        }
+
+        .cv-item .meta {
+            font-style: italic;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .cv-item p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* SKILLS TAGS */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .skill-remove {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* MODAL PREMIUM */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .modal-close:hover {
+            color: #000;
+        }
+
+        .premium-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .premium-features li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .premium-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 300px 1fr 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section,
+            .templates-section,
+            .preview-section {
+                max-height: none;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading,
+        .success-message,
+        .error-message {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .loading {
+            background: #ecf0f1;
+            color: var(--text-dark);
+        }
+
+        .success-message {
+            background: #d5f4e6;
+            color: #16a085;
+        }
+
+        .error-message {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎯 CV Builder Pro</h1>
+            <p>Crea currículums profesionales con plantillas premium y paletas de colores</p>
+        </header>
+
+        <div class="main-content">
+            <!-- SECCIÓN DE FORMULARIO -->
+            <div class="form-section">
+                <h2 class="section-title">📋 Información Personal</h2>
+
+                <div class="form-group">
+                    <label for="fullName">Nombre Completo *</label>
+                    <input type="text" id="fullName" placeholder="Ej: Juan Pérez García" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" placeholder="juan.perez@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Teléfono</label>
+                    <input type="tel" id="phone" placeholder="+57 300 123 4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Dirección</label>
+                    <input type="text" id="address" placeholder="Cali, Valle del Cauca, Colombia">
+                </div>
+
+                <div class="form-group">
+                    <label for="summary">Resumen Profesional</label>
+                    <textarea id="summary" placeholder="Describe tu perfil profesional en 2-3 líneas"></textarea>
+                </div>
+
+                <h2 class="section-title">💼 Experiencia Laboral</h2>
+                <div id="experienceContainer">
+                    <div class="dynamic-section">
+                        <div class="form-group">
+                            <label>Puesto</label>
+                            <input type="text" class="exp-title" placeholder="Desarrollador Web">
+                        </div>
+                        <div class="form-group">
+                            <label>Empresa</label>
+                            <input type="text" class="exp-company" placeholder="Tech Solutions SAS">
+                        </div>
+                        <div class="form-group">
+                            <label>Periodo</label>
+                            <input type="text" class="exp-period" placeholder="2020 - Presente">
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea class="exp-description" placeholder="Responsabilidades y logros..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="addExperience()">+ Agregar Experiencia</button>
+
+                <h2 class="section-title">🎓 Educación</h2>
+                <div id="educationContainer">
+                    <div class="dynamic-section">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" class="edu-degree" placeholder="Ingeniería de Sistemas">
+                        </div>
+                        <div class="form-group">
+                            <label>Institución</label>
+                            <input type="text" class="edu-institution" placeholder="Universidad del Valle">
+                        </div>
+                        <div class="form-group">
+                            <label>Año</label>
+                            <input type="text" class="edu-year" placeholder="2018 - 2023">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="addEducation()">+ Agregar Educación</button>
+
+                <h2 class="section-title">🛠️ Habilidades</h2>
+                <div class="form-group">
+                    <input type="text" id="skillInput" placeholder="Ej: JavaScript, React, Node.js">
+                    <button class="btn btn-success" onclick="addSkill()" style="margin-top: 10px;">Agregar</button>
+                </div>
+                <div class="skills-container" id="skillsContainer"></div>
+            </div>
+
+            <!-- SECCIÓN DE PLANTILLAS -->
+            <div class="templates-section">
+                <h2 class="section-title">🎨 Plantillas</h2>
+
+                <div class="template-grid">
+                    <div class="template-card active" data-template="classic">
+                        <div class="template-preview classic"></div>
+                        <div class="template-name">Clásico</div>
+                        <div class="template-type free">GRATIS</div>
+                    </div>
+
+                    <div class="template-card" data-template="modern">
+                        <div class="template-preview modern"></div>
+                        <div class="template-name">Moderno</div>
+                        <div class="template-type free">GRATIS</div>
+                    </div>
+
+                    <div class="template-card" data-template="creative" onclick="showPremiumModal()">
+                        <div class="premium-badge">PRO</div>
+                        <div class="template-preview creative"></div>
+                        <div class="template-name">Creativo</div>
+                        <div class="template-type premium">PREMIUM</div>
+                    </div>
+
+                    <div class="template-card" data-template="minimal">
+                        <div class="template-preview minimal"></div>
+                        <div class="template-name">Minimalista</div>
+                        <div class="template-type free">GRATIS</div>
+                    </div>
+
+                    <div class="template-card" data-template="executive" onclick="showPremiumModal()">
+                        <div class="premium-badge">PRO</div>
+                        <div class="template-preview executive"></div>
+                        <div class="template-name">Ejecutivo</div>
+                        <div class="template-type premium">PREMIUM</div>
+                    </div>
+
+                    <div class="template-card" data-template="artistic" onclick="showPremiumModal()">
+                        <div class="premium-badge">PRO</div>
+                        <div class="template-preview artistic"></div>
+                        <div class="template-name">Artístico</div>
+                        <div class="template-type premium">PREMIUM</div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">🎭 Paleta de Colores</h2>
+                <div class="color-palette">
+                    <div class="color-option active" data-color="blue"
+                        style="background: linear-gradient(135deg, #3498db, #2980b9);"></div>
+                    <div class="color-option" data-color="purple"
+                        style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></div>
+                    <div class="color-option" data-color="green"
+                        style="background: linear-gradient(135deg, #27ae60, #2ecc71);"></div>
+                    <div class="color-option" data-color="orange"
+                        style="background: linear-gradient(135deg, #f39c12, #e67e22);"></div>
+                    <div class="color-option" data-color="red"
+                        style="background: linear-gradient(135deg, #e74c3c, #c0392b);"></div>
+                    <div class="color-option" data-color="teal"
+                        style="background: linear-gradient(135deg, #16a085, #1abc9c);"></div>
+                    <div class="color-option" data-color="pink"
+                        style="background: linear-gradient(135deg, #e91e63, #ad1457);"></div>
+                    <div class="color-option" data-color="dark"
+                        style="background: linear-gradient(135deg, #34495e, #2c3e50);"></div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <p>Generando PDF... ⏳</p>
+                </div>
+                <div class="success-message" id="success">
+                    <p>¡PDF generado exitosamente! ✅</p>
+                </div>
+                <div class="error-message" id="error">
+                    <p>Error: Completa los campos obligatorios ⚠️</p>
+                </div>
+
+                <button class="btn btn-primary generate-btn" onclick="generatePDF()">📄 Generar PDF</button>
+                <button class="btn btn-premium" onclick="showPremiumModal()" style="width: 100%; margin-top: 10px;">✨
+                    Desbloquear Premium</button>
+            </div>
+
+            <!-- SECCIÓN DE VISTA PREVIA -->
+            <div class="preview-section">
+                <h2 style="color: var(--text-dark); margin-bottom: 20px;">👁️ Vista Previa</h2>
+                <div class="cv-preview" id="cvPreview">
+                    <div class="cv-header" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <div class="cv-name">Tu Nombre</div>
+                        <div class="cv-contact">email@ejemplo.com</div>
+                        <div class="cv-contact">Tu teléfono</div>
+                        <div class="cv-contact">Tu dirección</div>
+                    </div>
+
+                    <div class="cv-content">
+                        <div class="cv-section">
+                            <h3 style="color: #3498db; border-bottom: 2px solid #3498db;">Resumen Profesional</h3>
+                            <p>Tu resumen aparecerá aquí...</p>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 style="color: #3498db; border-bottom: 2px solid #3498db;">Experiencia Laboral</h3>
+                            <div class="cv-item" style="border-left: 3px solid #3498db;">
+                                <h4>Tu puesto más reciente</h4>
+                                <div class="meta">Empresa - Periodo</div>
+                                <p>Descripción de tu experiencia...</p>
+                            </div>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 style="color: #3498db; border-bottom: 2px solid #3498db;">Educación</h3>
+                            <div class="cv-item" style="border-left: 3px solid #3498db;">
+                                <h4>Tu título</h4>
+                                <div class="meta">Institución - Año</div>
+                            </div>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 style="color: #3498db; border-bottom: 2px solid #3498db;">Habilidades</h3>
+                            <p>Tus habilidades aparecerán aquí...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PREMIUM -->
+    <div id="premiumModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 style="color: var(--text-dark); margin-bottom: 20px;">✨ CV Builder Pro Premium</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Desbloquea todas las plantillas y características
+                avanzadas</p>
+
+            <ul class="premium-features">
+                <li>6 plantillas premium exclusivas</li>
+                <li>Paleta de colores ilimitada</li>
+                <li>Exportación en múltiples formatos</li>
+                <li>Sin marca de agua</li>
+                <li>Soporte prioritario</li>
+                <li>Actualizaciones automáticas</li>
+            </ul>
+
+            <div style="margin: 30px 0;">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--text-dark);">$9.99 <span
+                        style="font-size: 1rem; color: var(--text-light);">/mes</span></div>
+                <div style="color: var(--text-light);">o $59.99/año (ahorra 50%)</div>
+            </div>
+
+            <button class="btn btn-premium" style="width: 80%; padding: 15px;" onclick="simulatePurchase()">🚀 Obtener
+                Premium Ahora</button>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 15px;">30 días de garantía de devolución
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let skills = [];
+        let currentTemplate = 'classic';
+        let currentColor = 'blue';
+        let isPremium = false;
+
+        // Paletas de colores
+        const colorPalettes = {
+            blue: { primary: '#3498db', secondary: '#2980b9', accent: '#5dade2' },
+            purple: { primary: '#9b59b6', secondary: '#8e44ad', accent: '#bb8fce' },
+            green: { primary: '#27ae60', secondary: '#2ecc71', accent: '#58d68d' },
+            orange: { primary: '#f39c12', secondary: '#e67e22', accent: '#f8c471' },
+            red: { primary: '#e74c3c', secondary: '#c0392b', accent: '#ec7063' },
+            teal: { primary: '#16a085', secondary: '#1abc9c', accent: '#52c4a0' },
+            pink: { primary: '#e91e63', secondary: '#ad1457', accent: '#f06292' },
+            dark: { primary: '#34495e', secondary: '#2c3e50', accent: '#566573' }
+        };
+
+        // Plantillas disponibles
+        const templates = {
+            classic: { name: 'Clásico', free: true },
+            modern: { name: 'Moderno', free: true },
+            minimal: { name: 'Minimalista', free: true },
+            creative: { name: 'Creativo', free: false },
+            executive: { name: 'Ejecutivo', free: false },
+            artistic: { name: 'Artístico', free: false }
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeEventListeners();
+            updatePreview();
+        });
+
+        function initializeEventListeners() {
+            // Selección de plantillas
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    const template = this.dataset.template;
+                    if (templates[template].free || isPremium) {
+                        selectTemplate(template);
+                    }
+                });
+            });
+
+            // Selección de colores
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    selectColor(this.dataset.color);
+                });
+            });
+
+            // Modal
+            const modal = document.getElementById('premiumModal');
+            const closeBtn = document.querySelector('.modal-close');
+
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Formulario en tiempo real
+            document.addEventListener('input', updatePreview);
+            document.addEventListener('change', updatePreview);
+
+            // Habilidades con Enter
+            document.getElementById('skillInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    addSkill();
+                }
+            });
+        }
+
+        // Selección de plantilla
+        function selectTemplate(templateName) {
+            if (!templates[templateName].free && !isPremium) {
+                showPremiumModal();
+                return;
+            }
+
+            currentTemplate = templateName;
+
+            // Actualizar UI
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-template="${templateName}"]`).classList.add('active');
+
+            updatePreview();
+        }
+
+        // Selección de color
+        function selectColor(colorName) {
+            currentColor = colorName;
+
+            // Actualizar UI
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-color="${colorName}"]`).classList.add('active');
+
+            updatePreview();
+        }
+
+        // Modal Premium
+        function showPremiumModal() {
+            document.getElementById('premiumModal').style.display = 'block';
+        }
+
+        function simulatePurchase() {
+            // Simular compra
+            const loadingDiv = document.createElement('div');
+            loadingDiv.innerHTML = '<p>Procesando pago... 💳</p>';
+            loadingDiv.style.cssText = 'text-align: center; padding: 20px; color: #7f8c8d;';
+
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.innerHTML = '';
+            modalContent.appendChild(loadingDiv);
+
+            setTimeout(() => {
+                isPremium = true;
+                modalContent.innerHTML = `
+                    <h2 style="color: #27ae60;">🎉 ¡Bienvenido a Premium!</h2>
+                    <p style="margin: 20px 0;">Todas las plantillas y características han sido desbloqueadas.</p>
+                    <button class="btn btn-success" onclick="document.getElementById('premiumModal').style.display='none'">Continuar</button>
+                `;
+
+                // Activar todas las plantillas
+                document.querySelectorAll('.template-card').forEach(card => {
+                    card.onclick = function () {
+                        selectTemplate(this.dataset.template);
+                    };
+                });
+            }, 2000);
+        }
+
+        // Funciones de experiencia
+        function addExperience() {
+            const container = document.getElementById('experienceContainer');
+            const newExp = document.createElement('div');
+            newExp.className = 'dynamic-section';
+            newExp.innerHTML = `
+                <div class="form-group">
+                    <label>Puesto</label>
+                    <input type="text" class="exp-title" placeholder="Desarrollador Web">
+                </div>
+                <div class="form-group">
+                    <label>Empresa</label>
+                    <input type="text" class="exp-company" placeholder="Tech Solutions SAS">
+                </div>
+                <div class="form-group">
+                    <label>Periodo</label>
+                    <input type="text" class="exp-period" placeholder="2020 - Presente">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea class="exp-description" placeholder="Responsabilidades y logros..."></textarea>
+                </div>
+                <button class="btn btn-danger" onclick="this.parentElement.remove(); updatePreview();">Eliminar</button>
+            `;
+            container.appendChild(newExp);
+        }
+
+        // Funciones de educación
+        function addEducation() {
+            const container = document.getElementById('educationContainer');
+            const newEdu = document.createElement('div');
+            newEdu.className = 'dynamic-section';
+            newEdu.innerHTML = `
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" class="edu-degree" placeholder="Ingeniería de Sistemas">
+                </div>
+                <div class="form-group">
+                    <label>Institución</label>
+                    <input type="text" class="edu-institution" placeholder="Universidad del Valle">
+                </div>
+                <div class="form-group">
+                    <label>Año</label>
+                    <input type="text" class="edu-year" placeholder="2018 - 2023">
+                </div>
+                <button class="btn btn-danger" onclick="this.parentElement.remove(); updatePreview();">Eliminar</button>
+            `;
+            container.appendChild(newEdu);
+        }
+
+        // Funciones de habilidades
+        function addSkill() {
+            const input = document.getElementById('skillInput');
+            const skill = input.value.trim();
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                updateSkillsDisplay();
+                input.value = '';
+                updatePreview();
+            }
+        }
+
+        function removeSkill(skill) {
+            skills = skills.filter(s => s !== skill);
+            updateSkillsDisplay();
+            updatePreview();
+        }
+
+        function updateSkillsDisplay() {
+            const container = document.getElementById('skillsContainer');
+            const palette = colorPalettes[currentColor];
+            container.innerHTML = skills.map(skill =>
+                `<div class="skill-tag" style="background: ${palette.primary};">
+                    ${skill} 
+                    <span class="skill-remove" onclick="removeSkill('${skill}')">×</span>
+                </div>`
+            ).join('');
+        }
+
+        // Actualizar vista previa
+        function updatePreview() {
+            const preview = document.getElementById('cvPreview');
+            const palette = colorPalettes[currentColor];
+
+            const name = document.getElementById('fullName').value || 'Tu Nombre';
+            const email = document.getElementById('email').value || 'email@ejemplo.com';
+            const phone = document.getElementById('phone').value || 'Tu teléfono';
+            const address = document.getElementById('address').value || 'Tu dirección';
+            const summary = document.getElementById('summary').value || 'Tu resumen aparecerá aquí...';
+
+            // Obtener datos dinámicos
+            const experiences = getExperiences();
+            const education = getEducation();
+
+            // Aplicar estilo según plantilla
+            let headerStyle = '';
+            let contentClass = '';
+
+            switch (currentTemplate) {
+                case 'classic':
+                    headerStyle = `background: linear-gradient(135deg, ${palette.primary}, ${palette.secondary}); text-align: center;`;
+                    break;
+                case 'modern':
+                    headerStyle = `background: linear-gradient(45deg, ${palette.primary}, white); color: ${palette.secondary}; text-align: left;`;
+                    break;
+                case 'minimal':
+                    headerStyle = `background: white; color: ${palette.primary}; border-left: 5px solid ${palette.primary}; text-align: left;`;
+                    break;
+                case 'creative':
+                    headerStyle = `background: linear-gradient(135deg, ${palette.primary}, ${palette.secondary}, ${palette.accent}); text-align: center; position: relative;`;
+                    break;
+                case 'executive':
+                    headerStyle = `background: ${palette.secondary}; color: white; text-align: center; border-bottom: 3px solid ${palette.primary};`;
+                    break;
+                case 'artistic':
+                    headerStyle = `background: radial-gradient(circle, ${palette.primary}, ${palette.secondary}); text-align: center; position: relative; overflow: hidden;`;
+                    break;
+            }
+
+            preview.innerHTML = `
+                <div class="cv-header" style="${headerStyle} padding: 25px;">
+                    ${currentTemplate === 'artistic' ? '<div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; transform: translate(30px, -30px);"></div>' : ''}
+                    <div class="cv-name">${name}</div>
+                    <div class="cv-contact">${email}</div>
+                    ${phone ? `<div class="cv-contact">${phone}</div>` : ''}
+                    ${address ? `<div class="cv-contact">${address}</div>` : ''}
+                </div>
+                
+                <div class="cv-content" style="padding: 25px;">
+                    <div class="cv-section">
+                        <h3 style="color: ${palette.primary}; border-bottom: 2px solid ${palette.primary};">Resumen Profesional</h3>
+                        <p>${summary}</p>
+                    </div>
+
+                    ${experiences.length ? `
+                    <div class="cv-section">
+                        <h3 style="color: ${palette.primary}; border-bottom: 2px solid ${palette.primary};">Experiencia Laboral</h3>
+                        ${experiences.map(exp => `
+                            <div class="cv-item" style="border-left: 3px solid ${palette.primary};">
+                                <h4>${exp.title}</h4>
+                                <div class="meta" style="color: ${palette.secondary};">${exp.company}${exp.period ? ` - ${exp.period}` : ''}</div>
+                                ${exp.description ? `<p>${exp.description}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+
+                    ${education.length ? `
+                    <div class="cv-section">
+                        <h3 style="color: ${palette.primary}; border-bottom: 2px solid ${palette.primary};">Educación</h3>
+                        ${education.map(edu => `
+                            <div class="cv-item" style="border-left: 3px solid ${palette.primary};">
+                                <h4>${edu.degree}</h4>
+                                <div class="meta" style="color: ${palette.secondary};">${edu.institution}${edu.year ? ` - ${edu.year}` : ''}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+
+                    ${skills.length ? `
+                    <div class="cv-section">
+                        <h3 style="color: ${palette.primary}; border-bottom: 2px solid ${palette.primary};">Habilidades</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${skills.map(skill => `<span style="background: ${palette.primary}; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            updateSkillsDisplay();
+        }
+
+        // Obtener datos del formulario
+        function getExperiences() {
+            return Array.from(document.querySelectorAll('#experienceContainer .dynamic-section')).map(section => ({
+                title: section.querySelector('.exp-title').value,
+                company: section.querySelector('.exp-company').value,
+                period: section.querySelector('.exp-period').value,
+                description: section.querySelector('.exp-description').value
+            })).filter(exp => exp.title || exp.company);
+        }
+
+        function getEducation() {
+            return Array.from(document.querySelectorAll('#educationContainer .dynamic-section')).map(section => ({
+                degree: section.querySelector('.edu-degree').value,
+                institution: section.querySelector('.edu-institution').value,
+                year: section.querySelector('.edu-year').value
+            })).filter(edu => edu.degree || edu.institution);
+        }
+
+        // Validación
+        function validateForm() {
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            if (!name || !email) {
+                document.getElementById('error').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('error').style.display = 'none';
+                }, 3000);
+                return false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('error').textContent = 'Email inválido ⚠️';
+                document.getElementById('error').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('error').style.display = 'none';
+                }, 3000);
+                return false;
+            }
+
+            return true;
+        }
+
+        // Generar PDF
+        function generatePDF() {
+            if (!validateForm()) return;
+
+            const loading = document.getElementById('loading');
+            const success = document.getElementById('success');
+
+            loading.style.display = 'block';
+            success.style.display = 'none';
+
+            setTimeout(() => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const palette = colorPalettes[currentColor];
+
+                let yPos = 20;
+
+                // Aplicar estilo según plantilla
+                if (currentTemplate === 'creative' && !isPremium) {
+                    // Mostrar modal para plantillas premium
+                    loading.style.display = 'none';
+                    showPremiumModal();
+                    return;
+                }
+
+                // Header con color personalizado
+                const name = document.getElementById('fullName').value || 'Tu Nombre';
+                doc.setFillColor(palette.primary);
+                doc.rect(0, 0, 210, 40, 'F');
+
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text(name, 105, 25, { align: 'center' });
+
+                // Información de contacto
+                doc.setFontSize(10);
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const address = document.getElementById('address').value;
+
+                yPos = 32;
+                if (email) {
+                    doc.text(email, 105, yPos, { align: 'center' });
+                    yPos += 4;
+                }
+                if (phone) {
+                    doc.text(phone, 105, yPos, { align: 'center' });
+                    yPos += 4;
+                }
+                if (address) {
+                    doc.text(address, 105, yPos, { align: 'center' });
+                }
+
+                // Restaurar color de texto
+                doc.setTextColor(0, 0, 0);
+                yPos = 55;
+
+                // Resumen
+                const summary = document.getElementById('summary').value;
+                if (summary) {
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(palette.primary);
+                    doc.text('RESUMEN PROFESIONAL', 20, yPos);
+
+                    // Línea decorativa
+                    doc.setDrawColor(palette.primary);
+                    doc.line(20, yPos + 2, 60, yPos + 2);
+
+                    yPos += 8;
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    const splitSummary = doc.splitTextToSize(summary, 170);
+                    doc.text(splitSummary, 20, yPos);
+                    yPos += splitSummary.length * 5 + 8;
+                }
+
+                // Experiencia
+                const experiences = getExperiences();
+                if (experiences.length) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(palette.primary);
+                    doc.text('EXPERIENCIA LABORAL', 20, yPos);
+                    doc.line(20, yPos + 2, 70, yPos + 2);
+                    yPos += 10;
+
+                    experiences.forEach(exp => {
+                        if (yPos > 270) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFontSize(12);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(exp.title, 20, yPos);
+                        yPos += 5;
+
+                        doc.setFontSize(10);
+                        doc.setFont('helvetica', 'italic');
+                        doc.setTextColor(palette.secondary);
+                        doc.text(`${exp.company}${exp.period ? ' - ' + exp.period : ''}`, 20, yPos);
+                        yPos += 5;
+
+                        if (exp.description) {
+                            doc.setTextColor(0, 0, 0);
+                            doc.setFont('helvetica', 'normal');
+                            const splitDesc = doc.splitTextToSize(exp.description, 170);
+                            doc.text(splitDesc, 20, yPos);
+                            yPos += splitDesc.length * 4 + 5;
+                        }
+                        yPos += 3;
+                    });
+                }
+
+                // Educación
+                const education = getEducation();
+                if (education.length) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(palette.primary);
+                    doc.text('EDUCACIÓN', 20, yPos);
+                    doc.line(20, yPos + 2, 45, yPos + 2);
+                    yPos += 10;
+
+                    education.forEach(edu => {
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(edu.degree, 20, yPos);
+                        yPos += 5;
+
+                        doc.setFontSize(10);
+                        doc.setFont('helvetica', 'italic');
+                        doc.setTextColor(palette.secondary);
+                        doc.text(`${edu.institution}${edu.year ? ' - ' + edu.year : ''}`, 20, yPos);
+                        yPos += 8;
+                    });
+                }
+
+                // Habilidades
+                if (skills.length) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(palette.primary);
+                    doc.text('HABILIDADES', 20, yPos);
+                    doc.line(20, yPos + 2, 50, yPos + 2);
+                    yPos += 10;
+
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    const skillsText = skills.join(' • ');
+                    const splitSkills = doc.splitTextToSize(skillsText, 170);
+                    doc.text(splitSkills, 20, yPos);
+                }
+
+                // Marca de agua para versión gratuita
+                if (!isPremium) {
+                    doc.setTextColor(200, 200, 200);
+                    doc.setFontSize(8);
+                    doc.text('Creado con CV Builder Pro', 20, 290);
+                }
+
+                // Guardar
+                const fileName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'curriculum';
+                doc.save(`${fileName}_${currentTemplate}_CV.pdf`);
+
+                loading.style.display = 'none';
+                success.style.display = 'block';
+
+                setTimeout(() => {
+                    success.style.display = 'none';
+                }, 3000);
+
+            }, 1500);
+        }
+
+        // Funciones adicionales
+        function clearForm() {
+            if (confirm('¿Limpiar todos los campos?')) {
+                document.querySelectorAll('input, textarea').forEach(field => {
+                    field.value = '';
+                });
+                skills = [];
+                updateSkillsDisplay();
+                updatePreview();
+            }
+        }
+
+        function exportData() {
+            const data = {
+                personalInfo: {
+                    name: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    summary: document.getElementById('summary').value
+                },
+                skills: skills,
+                experiences: getExperiences(),
+                education: getEducation(),
+                settings: {
+                    template: currentTemplate,
+                    color: currentColor
+                }
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'cv_data.json';
+            link.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        // Inicializar tooltips
+        function showTooltip(message) {
+            const tooltip = document.createElement('div');
+            tooltip.textContent = message;
+            tooltip.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--text-dark);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 1001;
+                font-size: 14px;
+            `;
+            document.body.appendChild(tooltip);
+
+            setTimeout(() => {
+                document.body.removeChild(tooltip);
+            }, 2000);
+        }
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generatePDF();
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                exportData();
+                showTooltip('¡Datos exportados!');
+            }
+        });
+
+        console.log('CV Builder Pro cargado correctamente ✅');
+    </script>
+</body>
+
+</html>
